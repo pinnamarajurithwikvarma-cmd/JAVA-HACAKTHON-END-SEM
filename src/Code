@@ -1,1 +1,150 @@
+import java.util.ArrayList;
 
+class BankAccount {
+
+    // Account details
+    private String accountHolderName;
+    private String accountNumber;
+    private double balance;
+
+    // Transaction history
+    private ArrayList<String> transactions = new ArrayList<>();
+
+    // Total deposits and withdrawals
+    private double totalDeposits = 0;
+    private double totalWithdrawals = 0;
+
+    // Constructor
+    public BankAccount(String accountHolderName, String accountNumber,
+                       double initialBalance) {
+        this.accountHolderName = accountHolderName;
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+
+        transactions.add("Account opened with balance: Rs." + initialBalance);
+    }
+
+    // Method overloading - deposit with description
+    public void deposit(double amount, String description) {
+        if (amount > 0) {
+            balance += amount;
+            totalDeposits += amount;
+
+            transactions.add("Deposit: Rs." + amount +
+                    " - " + description);
+
+            System.out.println("Deposit successful: Rs." + amount);
+        } else {
+            System.out.println("Invalid deposit amount.");
+        }
+    }
+
+    // Method overloading - deposit without description
+    public void deposit(double amount) {
+        deposit(amount, "General deposit");
+    }
+
+    // Method overloading - withdrawal with description
+    public void withdraw(double amount, String description) {
+        if (amount <= 0) {
+            System.out.println("Invalid withdrawal amount.");
+        }
+        else if (amount > balance) {
+            System.out.println("Withdrawal failed: Insufficient balance.");
+            transactions.add("Failed withdrawal: Rs." + amount +
+                    " - Insufficient balance");
+        }
+        else {
+            balance -= amount;
+            totalWithdrawals += amount;
+
+            transactions.add("Withdrawal: Rs." + amount +
+                    " - " + description);
+
+            System.out.println("Withdrawal successful: Rs." + amount);
+        }
+    }
+
+    // Method overloading - withdrawal without description
+    public void withdraw(double amount) {
+        withdraw(amount, "General withdrawal");
+    }
+
+    // String manipulation for name verification
+    public boolean verifyAccountHolder(String name) {
+        String storedName = accountHolderName.trim().toLowerCase();
+        String enteredName = name.trim().toLowerCase();
+
+        return storedName.equals(enteredName);
+    }
+
+    // Display account summary
+    public void displaySummary() {
+
+        // String manipulation
+        String formattedName = accountHolderName.trim().toUpperCase();
+
+        System.out.println("\n========== BANK ACCOUNT SUMMARY ==========");
+        System.out.println("Account Holder : " + formattedName);
+        System.out.println("Account Number : " + accountNumber);
+        System.out.println("------------------------------------------");
+
+        System.out.println("Transaction History:");
+
+        for (String transaction : transactions) {
+            System.out.println("- " + transaction);
+        }
+
+        System.out.println("------------------------------------------");
+        System.out.println("Total Deposits    : Rs." + totalDeposits);
+        System.out.println("Total Withdrawals : Rs." + totalWithdrawals);
+        System.out.println("Final Balance     : Rs." + balance);
+        System.out.println("==========================================");
+    }
+}
+
+
+public class PersonalBankingLedger {
+
+    public static void main(String[] args) {
+
+        // Creating account using constructor
+        BankAccount account = new BankAccount(
+                "Rahul Kumar",
+                "ACC1001",
+                5000
+        );
+
+        // Successful deposits
+        account.deposit(2000, "Salary credit");
+        account.deposit(1000);
+
+        // Successful withdrawals
+        account.withdraw(1500, "Shopping");
+        account.withdraw(500);
+
+        // Attempted withdrawal exceeding available balance
+        account.withdraw(10000, "Large purchase");
+
+        // Account holder verification
+        System.out.println("\n========== ACCOUNT VERIFICATION ==========");
+
+        System.out.println(
+                "Verify 'Rahul Kumar': "
+                + account.verifyAccountHolder("Rahul Kumar")
+        );
+
+        System.out.println(
+                "Verify ' rahul kumar ': "
+                + account.verifyAccountHolder(" rahul kumar ")
+        );
+
+        System.out.println(
+                "Verify 'Ravi Kumar': "
+                + account.verifyAccountHolder("Ravi Kumar")
+        );
+
+        // Display complete summary
+        account.displaySummary();
+    }
+}
